@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.omerkoc.customer.exception.CustomerNotFoundException;
 
+import jakarta.validation.ValidationException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -18,6 +20,18 @@ public class GlobalExceptionHandler {
                 .errorCode("CUSTOMER_NOT_FOUND")
                 .path(request.getRequestURI())
                 .status(HttpStatus.NOT_FOUND.value())
+                .timestamp(System.currentTimeMillis())
+                .build());
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ErrorResponse> handleException(ValidationException ex,
+            jakarta.servlet.http.HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.builder()
+                .message(ex.getMessage())
+                .errorCode("VALIDATION_ERROR")
+                .path(request.getRequestURI())
+                .status(HttpStatus.BAD_REQUEST.value())
                 .timestamp(System.currentTimeMillis())
                 .build());
     }
