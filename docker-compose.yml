@@ -1,0 +1,68 @@
+services:
+  #docker compopse da ayağa kalkacak servisler:
+  postgresql:
+    #servis adı
+    container_name: Ms_pg_sql #container adı
+    image: postgres #image adı
+    environment:
+      POSTGRES_USER: postgres #postgres kullanıcı adı
+      POSTGRES_PASSWORD: admin
+      PGDATA: data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - flight-reservation
+
+  pgadmin:
+    container_name: Ms_pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    networks:
+      - flight-reservation
+    restart: unless-stopped
+
+  mongodb:
+    container_name: Mongo_db
+    image: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo:/data
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    networks:
+      - flight-reservation
+    restart: unless-stopped
+
+  mongo-express:
+    container_name: Mongo_express
+    image: mongo-express
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: admin
+      ME_CONFIG_MONGODB_SERVER: Mongo_db
+    networks:
+      - flight-reservation
+    restart: unless-stopped
+
+networks:
+  flight-reservation:
+    driver: bridge
+
+volumes:
+  postgres:
+  pgadmin:
+  mongo:
+  mongo-express:

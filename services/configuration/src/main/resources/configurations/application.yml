@@ -1,0 +1,21 @@
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+    register-with-eureka: false
+    fetch-registry: false
+name:
+ value: glaymet
+
+
+spring:
+ cloud:
+  config:
+   override-system-properties: false
+
+management: 
+ tracing:
+  sampling:
+   probability: 1.0
