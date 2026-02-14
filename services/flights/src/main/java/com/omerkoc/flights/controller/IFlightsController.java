@@ -4,17 +4,20 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
+import com.omerkoc.flights.dto.FlightsResponseDto;
 import com.omerkoc.flights.model.Flights;
 
 public interface IFlightsController {
 
-    public ResponseEntity<List<Flights>> getAllFlights();
+    public ResponseEntity<List<FlightsResponseDto>> getAllFlights();
 
-    public ResponseEntity<Flights> getFlightById(String id);
+    public ResponseEntity<FlightsResponseDto> getFlightById(Integer id);
 
-    public ResponseEntity<Flights> createFlight(Flights flight);
+    public ResponseEntity<FlightsResponseDto> createFlight(Flights flight);
 
-    public ResponseEntity<Flights> updateFlight(String id, Flights flight);
+    public ResponseEntity<FlightsResponseDto> updateFlight(Integer id, Flights flight);
 
-    public void deleteFlight(String id);
+    public ResponseEntity<Void> deleteFlight(Integer id);
+
+    public ResponseEntity<FlightsResponseDto> setPlane(Integer id, Integer planeId);
 }

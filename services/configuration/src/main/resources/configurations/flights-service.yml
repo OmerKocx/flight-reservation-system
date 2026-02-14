@@ -1,0 +1,28 @@
+server:
+  port: 8070
+
+spring:
+  application:
+    name: flights-service
+  
+  # Veritabanı Ayarları
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/flights
+    username: postgres
+    password: admin
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database: POSTGRESQL
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  
+  # Flyway Ayarları
+  flyway:
+    baseline-on-migrate: true
+    enabled: true
+    baseline-description: "init"
+    baseline-version: 0
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}

@@ -1,13 +1,16 @@
 package com.omerkoc.flights.dto;
 
+import lombok.Builder;
+
+@Builder
 public record FlightsResponseDto(
-        String id,
-        String flightCode,
-        String departureAirport,
-        String arrivalAirport,
-        String departureTime,
-        String arrivalTime,
-        String status,
-        String planeId) {
+                Integer id,
+                String flightCode,
+                String departureAirport,
+                String arrivalAirport,
+                String departureTime,
+                String arrivalTime,
+                String status,
+                Integer planeId) {
 
 }
