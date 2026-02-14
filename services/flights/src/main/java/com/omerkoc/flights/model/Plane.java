@@ -2,6 +2,7 @@ package com.omerkoc.flights.model;
 
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,9 +25,12 @@ public class Plane {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "plane_gen")
     @SequenceGenerator(name = "plane_gen", sequenceName = "plane_seq", allocationSize = 1)
+
     private Integer id;
+    @Column(nullable = false)
     private String model;
-    private String capacity;
+    @Column(nullable = false)
+    private Integer capacity;
 
     @OneToMany(mappedBy = "plane", orphanRemoval = false)
     private List<Flights> flights;

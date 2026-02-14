@@ -7,11 +7,12 @@ services:
     environment:
       POSTGRES_USER: postgres #postgres kullanıcı adı
       POSTGRES_PASSWORD: admin
+      POSTGRES_DB: flights
       PGDATA: data/postgres
     volumes:
       - postgres:/data/postgres
     ports:
-      - "5432:5432"
+      - "5433:5432"
     networks:
       - flight-reservation
 

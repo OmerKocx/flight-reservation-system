@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.omerkoc.flights.dto.FlightsRequestDto;
 import com.omerkoc.flights.dto.FlightsResponseDto;
 import com.omerkoc.flights.mapper.FlightsMapper;
 import com.omerkoc.flights.model.Flights;
@@ -37,21 +38,33 @@ public class FlightsServiceImpl implements IFlightsService {
     }
 
     @Override
-    public FlightsResponseDto createFlight(Flights flight) {
+    public FlightsResponseDto createFlight(FlightsRequestDto flightDto) {
+        Plane plane = planeRepository.findById(flightDto.planeId())
+                .orElseThrow(() -> new RuntimeException("Plane not found with id: " + flightDto.planeId()));
+
+        Flights flight = flightsMapper.mapToFlights(flightDto);
+        flight.setPlane(plane);
+
         return flightsMapper.mapToFlightsResponseDto(flightsRepository.save(flight));
     }
 
     @Override
-    public FlightsResponseDto updateFlight(Integer id, Flights flight) {
+    public FlightsResponseDto updateFlight(Integer id, FlightsRequestDto flightDto) {
 
         Flights existingFlight = flightsRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Flight not found with id: " + id));
-        existingFlight.setFlightCode(flight.getFlightCode());
-        existingFlight.setDepartureAirport(flight.getDepartureAirport());
-        existingFlight.setArrivalAirport(flight.getArrivalAirport());
-        existingFlight.setDepartureTime(flight.getDepartureTime());
-        existingFlight.setArrivalTime(flight.getArrivalTime());
-        existingFlight.setStatus(flight.getStatus());
+
+        Plane plane = planeRepository.findById(flightDto.planeId())
+                .orElseThrow(() -> new RuntimeException("Plane not found with id: " + flightDto.planeId()));
+
+        existingFlight.setFlightCode(flightDto.flightCode());
+        existingFlight.setDepartureAirport(flightDto.departureAirport());
+        existingFlight.setArrivalAirport(flightDto.arrivalAirport());
+        existingFlight.setDepartureTime(flightDto.departureTime());
+        existingFlight.setArrivalTime(flightDto.arrivalTime());
+        existingFlight.setStatus(flightDto.status());
+        existingFlight.setPlane(plane);
+
         return flightsMapper.mapToFlightsResponseDto(flightsRepository.save(existingFlight));
     }
 

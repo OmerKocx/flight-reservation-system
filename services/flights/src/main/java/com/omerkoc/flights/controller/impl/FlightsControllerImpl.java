@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.omerkoc.flights.controller.IFlightsController;
+import com.omerkoc.flights.dto.FlightsRequestDto;
 import com.omerkoc.flights.dto.FlightsResponseDto;
-import com.omerkoc.flights.model.Flights;
 import com.omerkoc.flights.service.IFlightsService;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -40,13 +42,14 @@ public class FlightsControllerImpl implements IFlightsController {
 
     @Override
     @PostMapping
-    public ResponseEntity<FlightsResponseDto> createFlight(@RequestBody Flights flight) {
+    public ResponseEntity<FlightsResponseDto> createFlight(@RequestBody @Valid FlightsRequestDto flight) {
         return ResponseEntity.ok().body(flightsService.createFlight(flight));
     }
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<FlightsResponseDto> updateFlight(@PathVariable Integer id, @RequestBody Flights flight) {
+    public ResponseEntity<FlightsResponseDto> updateFlight(@PathVariable Integer id,
+            @RequestBody @Valid FlightsRequestDto flight) {
         return ResponseEntity.ok().body(flightsService.updateFlight(id, flight));
     }
 

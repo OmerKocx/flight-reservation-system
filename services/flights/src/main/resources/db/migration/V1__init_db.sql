@@ -1,16 +1,18 @@
 create table if not exists planes (
-    id bigint primary key,
+    id integer primary key,
     model varchar(255) not null,
-    capacity int not null
+    capacity integer not null
 );
 
 create table if not exists flights (
-    id bigint primary key,
-    departure_time timestamp not null,
-    arrival_time timestamp not null,
+    id integer primary key,
+    flight_code varchar(255) not null,
     departure_airport varchar(255) not null,
     arrival_airport varchar(255) not null,
-    plane_id bigint not null,
+    departure_time timestamp not null,
+    arrival_time timestamp not null,
+    status varchar(255) not null,
+    plane_id integer not null,
     CONSTRAINT fk_flights_planes
         FOREIGN KEY (plane_id) 
         REFERENCES planes(id)   
