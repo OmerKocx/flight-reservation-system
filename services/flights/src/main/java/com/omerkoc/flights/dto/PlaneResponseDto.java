@@ -6,9 +6,9 @@ import lombok.Builder;
 
 @Builder
 public record PlaneResponseDto(
-                Integer id,
-                String model,
-                Integer capacity,
-                List<FlightsResponseDto> flights) {
+        Integer id,
+        String model,
+        Integer capacity,
+        List<FlightsResponseDto> flights) {
 
 }

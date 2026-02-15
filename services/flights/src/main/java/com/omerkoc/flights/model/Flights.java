@@ -39,6 +39,6 @@ public class Flights {
     private String status;
 
     @ManyToOne
-    @JoinColumn(name = "plane_id", nullable = false) // İŞTE KRİTİK NOKTA BURASI!
+    @JoinColumn(name = "plane_id", nullable = false)
     private Plane plane;
 }

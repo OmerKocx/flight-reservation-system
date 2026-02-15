@@ -3,7 +3,6 @@ package com.omerkoc.flights.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.omerkoc.flights.dto.FlightsRequestDto;
 import com.omerkoc.flights.dto.FlightsResponseDto;

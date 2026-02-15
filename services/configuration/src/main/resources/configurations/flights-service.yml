@@ -8,7 +8,7 @@ spring:
   # Veritabanı Ayarları
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5433/flights
+    url: jdbc:postgresql://localhost:5432/flights
     username: postgres
     password: admin
   
