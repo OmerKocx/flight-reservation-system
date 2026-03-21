@@ -2,5 +2,6 @@ server:
   port: 8090
 
 spring:
-  mongodb:
-    uri: mongodb://admin:admin@localhost:27017/customer?authSource=admin
+  data:
+    mongodb:
+      uri: "mongodb://admin:admin@localhost:27017/customer?authSource=admin"
