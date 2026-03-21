@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 import com.omerkoc.customer.controller.ICustomerController;
 import com.omerkoc.customer.dto.CustomerRequestDto;
 import com.omerkoc.customer.dto.CustomerResponseDto;
@@ -28,14 +30,14 @@ public class CustomerControllerImpl implements ICustomerController {
 
     @Override
     @PostMapping
-    public ResponseEntity<CustomerResponseDto> createCustomer(@RequestBody CustomerRequestDto customerRequestDto) {
+    public ResponseEntity<CustomerResponseDto> createCustomer(@Valid @RequestBody CustomerRequestDto customerRequestDto) {
         return ResponseEntity.ok(customerService.createCustomer(customerRequestDto));
     }
 
     @Override
     @PutMapping("/{id}")
     public ResponseEntity<CustomerResponseDto> updateCustomer(@PathVariable String id,
-            @RequestBody CustomerRequestDto customerRequestDto) {
+            @Valid @RequestBody CustomerRequestDto customerRequestDto) {
         return ResponseEntity.ok(customerService.updateCustomer(id, customerRequestDto));
     }
 

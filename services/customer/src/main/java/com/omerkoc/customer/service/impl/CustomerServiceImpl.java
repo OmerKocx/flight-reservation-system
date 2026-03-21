@@ -1,7 +1,6 @@
 package com.omerkoc.customer.service.impl;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -27,24 +26,23 @@ public class CustomerServiceImpl implements ICustomerService {
     public CustomerResponseDto createCustomer(CustomerRequestDto customerRequestDto) {
 
         Customer customer = customerMapper.toCustomer(customerRequestDto);
-        customer.setId(UUID.randomUUID().toString());
-        customerRepository.save(customer);
-        return customerMapper.toCustomerResponseDto(customer);
+        Customer savedCustomer = customerRepository.save(customer);
+        return customerMapper.toCustomerResponseDto(savedCustomer);
     }
 
     @Override
     public CustomerResponseDto updateCustomer(String id, CustomerRequestDto customerRequestDto) {
 
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new CustomerNotFoundException("Customer nor found with id: " + id));
+                .orElseThrow(() -> new CustomerNotFoundException("Customer not found with id: " + id));
         customer.setTcNo(customerRequestDto.tcNo());
         customer.setName(customerRequestDto.name());
         customer.setSurname(customerRequestDto.surname());
         customer.setEmail(customerRequestDto.email());
         customer.setPhone(customerRequestDto.phone());
         customer.setAddress(customerRequestDto.address());
-        customerRepository.save(customer);
-        return customerMapper.toCustomerResponseDto(customer);
+        Customer savedCustomer = customerRepository.save(customer);
+        return customerMapper.toCustomerResponseDto(savedCustomer);
 
     }
 

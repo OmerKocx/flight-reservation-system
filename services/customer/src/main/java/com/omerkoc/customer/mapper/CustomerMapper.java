@@ -28,8 +28,8 @@ public class CustomerMapper {
                 .email(customer.getEmail())
                 .phone(customer.getPhone())
                 .address(customer.getAddress())
-                .createdDate(customer.getCreatedDate().toString())
-                .lastModifiedDate(customer.getLastModifiedDate().toString())
+                .createdDate(customer.getCreatedDate() != null ? customer.getCreatedDate().toString() : null)
+                .lastModifiedDate(customer.getLastModifiedDate() != null ? customer.getLastModifiedDate().toString() : null)
                 .build();
     }
 }
