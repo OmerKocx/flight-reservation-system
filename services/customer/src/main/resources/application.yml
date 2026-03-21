@@ -1,5 +1,11 @@
 spring:
- application:
-  name: customer-service
- config:
-  import: "optional:configserver:http://localhost:8888"
+  application:
+    name: customer-service
+  config:
+    import: "optional:configserver:http://localhost:8888"
+  cloud:
+    config:
+      enabled: true
+  data:
+    mongodb:
+      uri: mongodb://admin:admin@localhost:27017/customer?authSource=admin
