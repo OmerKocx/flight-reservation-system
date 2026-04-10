@@ -1,4 +1,4 @@
-create table if not exists planes (
+create table if not exists aircrafts (
     id integer primary key,
     model varchar(255) not null,
     capacity integer not null
@@ -12,13 +12,14 @@ create table if not exists flights (
     departure_time timestamp not null,
     arrival_time timestamp not null,
     status varchar(255) not null,
-    plane_id integer not null,
-    CONSTRAINT fk_flights_planes
-        FOREIGN KEY (plane_id) 
-        REFERENCES planes(id)   
+    aircraft_id integer not null,
+    capacity integer not null,
+    CONSTRAINT fk_flights_aircrafts
+        FOREIGN KEY (aircraft_id) 
+        REFERENCES aircrafts(id)   
         ON DELETE RESTRICT
 );
 
 
-create sequence if not exists plane_seq start with 1 increment by 1;
+create sequence if not exists aircraft_seq start with 1 increment by 1;
 create sequence if not exists flight_seq start with 1 increment by 1;

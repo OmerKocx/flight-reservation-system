@@ -1,12 +1,12 @@
 package com.omerkoc.customer.mapper;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.omerkoc.customer.dto.CustomerRequestDto;
 import com.omerkoc.customer.dto.CustomerResponseDto;
 import com.omerkoc.customer.model.Customer;
 
-@Service
+@Component
 public class CustomerMapper {
     public Customer toCustomer(CustomerRequestDto customerRequestDto) {
         return Customer.builder()
@@ -29,7 +29,8 @@ public class CustomerMapper {
                 .phone(customer.getPhone())
                 .address(customer.getAddress())
                 .createdDate(customer.getCreatedDate() != null ? customer.getCreatedDate().toString() : null)
-                .lastModifiedDate(customer.getLastModifiedDate() != null ? customer.getLastModifiedDate().toString() : null)
+                .lastModifiedDate(
+                        customer.getLastModifiedDate() != null ? customer.getLastModifiedDate().toString() : null)
                 .build();
     }
 }

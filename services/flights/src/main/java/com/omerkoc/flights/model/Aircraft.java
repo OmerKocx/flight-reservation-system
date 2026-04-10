@@ -17,14 +17,14 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "planes")
+@Table(name = "aircrafts")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Plane {
+public class Aircraft {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "plane_gen")
-    @SequenceGenerator(name = "plane_gen", sequenceName = "plane_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "aircraft_gen")
+    @SequenceGenerator(name = "aircraft_gen", sequenceName = "aircraft_seq", allocationSize = 1)
 
     private Integer id;
     @Column(nullable = false)
@@ -32,16 +32,16 @@ public class Plane {
     @Column(nullable = false)
     private Integer capacity;
 
-    @OneToMany(mappedBy = "plane", orphanRemoval = false)
+    @OneToMany(mappedBy = "aircraft", orphanRemoval = false)
     private List<Flights> flights;
 
     public void addFlight(Flights flight) {
         flights.add(flight);
-        flight.setPlane(this);
+        flight.setAircraft(this);
     }
 
     public void removeFlight(Flights flight) {
         flights.remove(flight);
-        flight.setPlane(null);
+        flight.setAircraft(null);
     }
 }

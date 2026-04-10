@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import com.omerkoc.flights.exception.FlightsNotFoundException;
-import com.omerkoc.flights.exception.PlaneNotFoundException;
+import com.omerkoc.flights.exception.AircraftNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -31,11 +31,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
-    @ExceptionHandler(PlaneNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handlePlaneNotFoundException(PlaneNotFoundException ex, WebRequest request) {
+    @ExceptionHandler(AircraftNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleAircraftNotFoundException(AircraftNotFoundException ex, WebRequest request) {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .message(ex.getMessage())
-                .errorCode("PLANE_NOT_FOUND")
+                .errorCode("AIRCRAFT_NOT_FOUND")
                 .path(request.getDescription(false))
                 .status(HttpStatus.NOT_FOUND.value())
                 .timestamp(System.currentTimeMillis())

@@ -17,5 +17,7 @@ public interface IFlightsService {
 
     public void deleteFlight(Integer id);
 
-    public FlightsResponseDto setPlane(Integer id, Integer planeId);
+    public FlightsResponseDto setAircraft(Integer id, Integer aircraftId);
+
+    public FlightsResponseDto setCapacity(Integer flightId);
 }

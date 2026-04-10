@@ -45,7 +45,7 @@ public class CustomerControllerImpl implements ICustomerController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCustomer(@PathVariable String id) {
         customerService.deleteCustomer(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @Override

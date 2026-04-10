@@ -19,5 +19,7 @@ public interface IFlightsController {
 
     public ResponseEntity<Void> deleteFlight(Integer id);
 
-    public ResponseEntity<FlightsResponseDto> setPlane(Integer id, Integer planeId);
+    public ResponseEntity<FlightsResponseDto> setAircraft(Integer id, Integer aircraftId);
+
+    public ResponseEntity<FlightsResponseDto> setCapacity(Integer flightId);
 }

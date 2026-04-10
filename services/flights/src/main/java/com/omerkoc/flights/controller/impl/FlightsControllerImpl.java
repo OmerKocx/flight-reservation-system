@@ -57,12 +57,18 @@ public class FlightsControllerImpl implements IFlightsController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFlight(@PathVariable Integer id) {
         flightsService.deleteFlight(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @Override
-    @PostMapping("/{id}/plane/{planeId}")
-    public ResponseEntity<FlightsResponseDto> setPlane(@PathVariable Integer id, @PathVariable Integer planeId) {
-        return ResponseEntity.ok().body(flightsService.setPlane(id, planeId));
+    @PostMapping("/{id}/aircraft/{aircraftId}")
+    public ResponseEntity<FlightsResponseDto> setAircraft(@PathVariable Integer id, @PathVariable Integer aircraftId) {
+        return ResponseEntity.ok().body(flightsService.setAircraft(id, aircraftId));
+    }
+
+    @Override
+    @PostMapping("/set-capacity/{flightId}")
+    public ResponseEntity<FlightsResponseDto> setCapacity(@PathVariable Integer flightId) {
+        return ResponseEntity.ok().body(flightsService.setCapacity(flightId));
     }
 }

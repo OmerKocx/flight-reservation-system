@@ -7,13 +7,16 @@ import org.springframework.stereotype.Service;
 
 import com.omerkoc.flights.dto.FlightsRequestDto;
 import com.omerkoc.flights.dto.FlightsResponseDto;
+import com.omerkoc.flights.exception.AircraftNotFoundException;
+import com.omerkoc.flights.exception.FlightsNotFoundException;
 import com.omerkoc.flights.mapper.FlightsMapper;
+import com.omerkoc.flights.model.Aircraft;
 import com.omerkoc.flights.model.Flights;
-import com.omerkoc.flights.model.Plane;
+import com.omerkoc.flights.repository.AircraftRepository;
 import com.omerkoc.flights.repository.FlightsRepository;
-import com.omerkoc.flights.repository.PlaneRepository;
 import com.omerkoc.flights.service.IFlightsService;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -22,7 +25,7 @@ public class FlightsServiceImpl implements IFlightsService {
 
         private final FlightsRepository flightsRepository;
         private final FlightsMapper flightsMapper;
-        private final PlaneRepository planeRepository;
+        private final AircraftRepository aircraftRepository;
 
         @Override
         public List<FlightsResponseDto> getAllFlights() {
@@ -34,19 +37,19 @@ public class FlightsServiceImpl implements IFlightsService {
         public FlightsResponseDto getFlightById(Integer id) {
                 return flightsMapper.mapToFlightsResponseDto(
                                 flightsRepository.findById(id)
-                                                .orElseThrow(() -> new RuntimeException(
+                                                .orElseThrow(() -> new FlightsNotFoundException(
                                                                 "Flight not found with id: " + id)));
         }
 
         @Override
         public FlightsResponseDto createFlight(FlightsRequestDto flightDto) {
-                Plane plane = planeRepository.findById(flightDto.planeId())
-                                .orElseThrow(() -> new RuntimeException(
-                                                "Plane not found with id: " + flightDto.planeId()));
+                Aircraft aircraft = aircraftRepository.findById(flightDto.aircraftId())
+                                .orElseThrow(() -> new AircraftNotFoundException(
+                                                "Aircraft not found with id: " + flightDto.aircraftId()));
 
                 Flights flight = flightsMapper.mapToFlights(flightDto);
-                flight.setPlane(plane);
-
+                flight.setAircraft(aircraft);
+                flight.setCapacity(aircraft.getCapacity());
                 return flightsMapper.mapToFlightsResponseDto(flightsRepository.save(flight));
         }
 
@@ -54,11 +57,12 @@ public class FlightsServiceImpl implements IFlightsService {
         public FlightsResponseDto updateFlight(Integer id, FlightsRequestDto flightDto) {
 
                 Flights existingFlight = flightsRepository.findById(id)
-                                .orElseThrow(() -> new RuntimeException("Flight not found with id: " + id));
+                                .orElseThrow(() -> new FlightsNotFoundException(
+                                                "Flight not found with id: " + id));
 
-                Plane plane = planeRepository.findById(flightDto.planeId())
-                                .orElseThrow(() -> new RuntimeException(
-                                                "Plane not found with id: " + flightDto.planeId()));
+                Aircraft aircraft = aircraftRepository.findById(flightDto.aircraftId())
+                                .orElseThrow(() -> new AircraftNotFoundException(
+                                                "Aircraft not found with id: " + flightDto.aircraftId()));
 
                 existingFlight.setFlightCode(flightDto.flightCode());
                 existingFlight.setDepartureAirport(flightDto.departureAirport());
@@ -66,7 +70,7 @@ public class FlightsServiceImpl implements IFlightsService {
                 existingFlight.setDepartureTime(flightDto.departureTime());
                 existingFlight.setArrivalTime(flightDto.arrivalTime());
                 existingFlight.setStatus(flightDto.status());
-                existingFlight.setPlane(plane);
+                existingFlight.setAircraft(aircraft);
 
                 return flightsMapper.mapToFlightsResponseDto(flightsRepository.save(existingFlight));
         }
@@ -77,14 +81,30 @@ public class FlightsServiceImpl implements IFlightsService {
         }
 
         @Override
-        public FlightsResponseDto setPlane(Integer id, Integer planeId) {
+        public FlightsResponseDto setAircraft(Integer id, Integer aircraftId) {
                 Flights existingFlight = flightsRepository.findById(id)
-                                .orElseThrow(() -> new RuntimeException("Flight not found with id: " + id));
+                                .orElseThrow(() -> new FlightsNotFoundException(
+                                                "Flight not found with id: " + id));
 
-                Plane plane = planeRepository.findById(planeId)
-                                .orElseThrow(() -> new RuntimeException("Plane not found with id: " + planeId));
-                existingFlight.setPlane(plane);
+                Aircraft aircraft = aircraftRepository.findById(aircraftId)
+                                .orElseThrow(() -> new AircraftNotFoundException(
+                                                "Aircraft not found with id: " + aircraftId));
+                existingFlight.setAircraft(aircraft);
                 return flightsMapper.mapToFlightsResponseDto(flightsRepository.save(existingFlight));
         }
 
+        @Transactional
+        @Override
+        public FlightsResponseDto setCapacity(Integer flightId) {
+                Flights existingFlight = flightsRepository.findById(flightId)
+                                .orElseThrow(() -> new FlightsNotFoundException(
+                                                "Flight not found with id: " + flightId));
+
+                if (existingFlight.getCapacity() <= 0) {
+                        throw new IllegalStateException("Uçak doldu reis, daha fazla bilet kesemezsin!");
+                }
+
+                existingFlight.setCapacity(existingFlight.getCapacity() - 1);
+                return flightsMapper.mapToFlightsResponseDto(flightsRepository.save(existingFlight));
+        }
 }

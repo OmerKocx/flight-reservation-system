@@ -1,12 +1,12 @@
 package com.omerkoc.flights.mapper;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.omerkoc.flights.dto.FlightsRequestDto;
 import com.omerkoc.flights.dto.FlightsResponseDto;
 import com.omerkoc.flights.model.Flights;
 
-@Service
+@Component
 public class FlightsMapper {
 
     public FlightsResponseDto mapToFlightsResponseDto(Flights flights) {
@@ -18,7 +18,8 @@ public class FlightsMapper {
                 .departureTime(flights.getDepartureTime())
                 .arrivalTime(flights.getArrivalTime())
                 .status(flights.getStatus())
-                .planeId(flights.getPlane().getId())
+                .aircraftId(flights.getAircraft().getId())
+                .capacity(flights.getCapacity())
                 .build();
     }
 

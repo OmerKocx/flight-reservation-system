@@ -39,6 +39,8 @@ public class Flights {
     private String status;
 
     @ManyToOne
-    @JoinColumn(name = "plane_id", nullable = false)
-    private Plane plane;
+    @JoinColumn(name = "aircraft_id", nullable = false)
+    private Aircraft aircraft;
+    @Column(nullable = false)
+    private int capacity;
 }

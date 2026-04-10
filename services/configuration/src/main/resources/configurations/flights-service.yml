@@ -5,10 +5,9 @@ spring:
   application:
     name: flights-service
   
-  # Veritabanı Ayarları
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/flights
+    url: jdbc:postgresql://localhost:5444/flights
     username: postgres
     password: admin
   
@@ -18,7 +17,6 @@ spring:
     database: POSTGRESQL
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   
-  # Flyway Ayarları
   flyway:
     baseline-on-migrate: true
     enabled: true
