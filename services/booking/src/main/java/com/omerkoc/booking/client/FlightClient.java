@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.omerkoc.booking.dto.FlightResponse;
 
-@FeignClient(name = "flights-service", url = "http://localhost:8070/api/v1/flights")
+@FeignClient(name = "flights-service", url = "${application.config.flights-url}")
 public interface FlightClient {
 
     @GetMapping("/{id}")

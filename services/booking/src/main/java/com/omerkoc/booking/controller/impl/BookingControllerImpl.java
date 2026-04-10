@@ -2,6 +2,7 @@ package com.omerkoc.booking.controller.impl;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import com.omerkoc.booking.dto.BookingResponseDto;
 import com.omerkoc.booking.service.IBookingService;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -30,7 +32,7 @@ public class BookingControllerImpl implements IBookingController {
     @Override
     @PostMapping
     public ResponseEntity<BookingResponseDto> createBooking(@RequestBody @Valid BookingRequestDto request) {
-        return ResponseEntity.status(201).body(bookingService.createBooking(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(bookingService.createBooking(request));
     }
 
     @Override
@@ -41,20 +43,21 @@ public class BookingControllerImpl implements IBookingController {
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<BookingResponseDto> getBookingById(@PathVariable Integer id) {
+    public ResponseEntity<BookingResponseDto> getBookingById(@PathVariable @NotNull Integer id) {
         return ResponseEntity.ok(bookingService.getBookingById(id));
     }
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<BookingResponseDto> updateBooking(@PathVariable Integer id,
+    public ResponseEntity<BookingResponseDto> updateBooking(
+            @PathVariable @NotNull Integer id,
             @RequestBody @Valid BookingRequestDto request) {
         return ResponseEntity.ok(bookingService.updateBooking(id, request));
     }
 
     @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBooking(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteBooking(@PathVariable @NotNull Integer id) {
         bookingService.deleteBooking(id);
         return ResponseEntity.noContent().build();
     }

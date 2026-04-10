@@ -38,7 +38,8 @@ public class AircraftServiceImpl implements IAircraftService {
 
     @Override
     public AircraftResponseDto createAircraft(AircraftRequestDto aircraftRequestDto) {
-        return aircraftMapper.mapToAircraftResponseDto(aircraftRepository.save(aircraftMapper.mapToAircraft(aircraftRequestDto)));
+        return aircraftMapper
+                .mapToAircraftResponseDto(aircraftRepository.save(aircraftMapper.mapToAircraft(aircraftRequestDto)));
     }
 
     @Override

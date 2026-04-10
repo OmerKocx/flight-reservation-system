@@ -32,37 +32,40 @@ public class BookingServiceImpl implements IBookingService {
     private final FlightClient flightClient;
 
     @Override
+    @jakarta.transaction.Transactional // BURAYI EKLE: Hata olursa her şeyi geri alır (Rollback)
     public BookingResponseDto createBooking(BookingRequestDto request) {
         log.info("Creating booking for customer {} on flight {}", request.customerId(), request.flightId());
 
-        try {
-            var customer = customerClient.getCustomerById(request.customerId());
-            if (customer == null)
-                throw new BookingNotFoundException("Customer not found");
-        } catch (Exception e) {
-            throw new BookingNotFoundException(
-                    "Customer service communication error or not found: " + request.customerId());
-        }
+        // 1. Dış Servis Kontrolleri (Read-only kısımlar)
+        checkCustomerAndFlight(request);
 
-        try {
-            var flight = flightClient.getFlightById(request.flightId());
-            if (flight == null)
-                throw new BookingNotFoundException("Flight not found");
-        } catch (Exception e) {
-            throw new BookingNotFoundException(
-                    "Flight service communication error or not found: " + request.flightId());
-        }
-
+        // 2. Önce Bileti Hazırla ve Kaydet
         Booking booking = bookingMapper.toBooking(request);
-
         booking.setBookingCode(UUID.randomUUID().toString().substring(0, 8).toUpperCase());
         booking.setStatus(BookingStatus.BOOKED);
         booking.setBookingDate(LocalDateTime.now());
 
         Booking savedBooking = bookingRepository.save(booking);
-        log.info("Booking created successfully with PNR: {}", savedBooking.getBookingCode());
 
+        try {
+            log.info("Decreasing capacity for flight: {}", request.flightId());
+            flightClient.decreaseCapacity(request.flightId());
+        } catch (Exception e) {
+            log.error("Kapasite düşürülemedi, işlem geri alınıyor: {}", e.getMessage());
+            throw new RuntimeException("Flight capacity could not be updated. Booking cancelled!");
+        }
+
+        log.info("Booking created successfully with PNR: {}", savedBooking.getBookingCode());
         return bookingMapper.toResponse(savedBooking);
+    }
+
+    private void checkCustomerAndFlight(BookingRequestDto request) {
+        try {
+            customerClient.getCustomerById(request.customerId());
+            flightClient.getFlightById(request.flightId());
+        } catch (Exception e) {
+            throw new RuntimeException("Customer or Flight service unavailable!");
+        }
     }
 
     @Override
@@ -91,4 +94,5 @@ public class BookingServiceImpl implements IBookingService {
     public BookingResponseDto updateBooking(Integer id, BookingRequestDto request) {
         throw new UnsupportedOperationException("Unimplemented method 'updateBooking'");
     }
+
 }

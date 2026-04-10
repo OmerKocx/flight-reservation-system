@@ -32,7 +32,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AircraftNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleAircraftNotFoundException(AircraftNotFoundException ex, WebRequest request) {
+    public ResponseEntity<ErrorResponse> handleAircraftNotFoundException(AircraftNotFoundException ex,
+            WebRequest request) {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .message(ex.getMessage())
                 .errorCode("AIRCRAFT_NOT_FOUND")

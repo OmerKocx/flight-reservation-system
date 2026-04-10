@@ -1,0 +1,25 @@
+server:
+  port: 8222
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: customer-service
+          uri: lb://customer-service
+          predicates:
+            - Path=/api/v1/customers/**
+        - id: flights-service
+          uri: lb://flights-service
+          predicates:
+            - Path=/api/v1/flights/**
+
+        - id: booking-service
+          uri: lb://booking-service
+          predicates:
+            - Path=/api/v1/bookings/**
