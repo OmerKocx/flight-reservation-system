@@ -65,4 +65,18 @@ public class GlobalExceptionHandler {
                                 .build();
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
+
+        @ExceptionHandler(IllegalArgumentException.class)
+        public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex,
+                        WebRequest request) {
+                ErrorResponse errorResponse = ErrorResponse.builder()
+                                .message(ex.getMessage())
+                                .errorCode("INVALID_ARGUMENT")
+                                .path(request.getDescription(false))
+                                .status(HttpStatus.BAD_REQUEST.value())
+                                .timestamp(System.currentTimeMillis())
+                                .traceId(request.getSessionId())
+                                .build();
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }
 }
