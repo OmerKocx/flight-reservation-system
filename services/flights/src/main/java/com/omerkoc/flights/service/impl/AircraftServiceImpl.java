@@ -31,6 +31,9 @@ public class AircraftServiceImpl implements IAircraftService {
     @Override
     public AircraftResponseDto getAircraftById(Integer id) {
 
+        if (id == null) {
+            throw new IllegalArgumentException("Aircraft ID cannot be null!");
+        }
         Aircraft aircraft = aircraftRepository.findById(id)
                 .orElseThrow(() -> new AircraftNotFoundException("Aircraft not found with id: " + id));
         return aircraftMapper.mapToAircraftResponseDto(aircraft);
@@ -44,6 +47,9 @@ public class AircraftServiceImpl implements IAircraftService {
 
     @Override
     public AircraftResponseDto updateAircraft(Integer id, AircraftRequestDto aircraftRequestDto) {
+        if (id == null || aircraftRequestDto == null) {
+            throw new IllegalArgumentException("ID or Request Data cannot be null!");
+        }
         Aircraft existingAircraft = aircraftRepository.findById(id)
                 .orElseThrow(() -> new AircraftNotFoundException("Aircraft not found with id: " + id));
 
@@ -55,6 +61,9 @@ public class AircraftServiceImpl implements IAircraftService {
 
     @Override
     public void deleteAircraft(Integer id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Aircraft ID cannot be null!");
+        }
         aircraftRepository.deleteById(id);
     }
 

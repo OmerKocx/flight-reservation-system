@@ -77,6 +77,9 @@ public class BookingServiceImpl implements IBookingService {
 
     @Override
     public BookingResponseDto getBookingById(Integer id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Booking ID cannot be null!");
+        }
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new BookingNotFoundException("Booking not found with id: " + id));
         return bookingMapper.toResponse(booking);
@@ -84,6 +87,9 @@ public class BookingServiceImpl implements IBookingService {
 
     @Override
     public void deleteBooking(Integer id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Booking ID cannot be null!");
+        }
         if (!bookingRepository.existsById(id)) {
             throw new BookingNotFoundException("Booking not found with id: " + id);
         }

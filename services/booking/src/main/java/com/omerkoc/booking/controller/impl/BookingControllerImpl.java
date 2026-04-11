@@ -19,7 +19,6 @@ import com.omerkoc.booking.dto.BookingResponseDto;
 import com.omerkoc.booking.service.IBookingService;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -41,23 +40,22 @@ public class BookingControllerImpl implements IBookingController {
         return ResponseEntity.ok(bookingService.getAllBookings());
     }
 
-    @Override
     @GetMapping("/{id}")
-    public ResponseEntity<BookingResponseDto> getBookingById(@PathVariable @NotNull Integer id) {
+    public ResponseEntity<BookingResponseDto> getBookingById(@PathVariable Integer id) {
         return ResponseEntity.ok(bookingService.getBookingById(id));
     }
 
     @Override
     @PutMapping("/{id}")
     public ResponseEntity<BookingResponseDto> updateBooking(
-            @PathVariable @NotNull Integer id,
+            @PathVariable Integer id,
             @RequestBody @Valid BookingRequestDto request) {
         return ResponseEntity.ok(bookingService.updateBooking(id, request));
     }
 
     @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBooking(@PathVariable @NotNull Integer id) {
+    public ResponseEntity<Void> deleteBooking(@PathVariable Integer id) {
         bookingService.deleteBooking(id);
         return ResponseEntity.noContent().build();
     }

@@ -50,12 +50,10 @@ public class FlightsServiceImpl implements IFlightsService {
         @Transactional
         @Override
         public FlightsResponseDto createFlight(FlightsRequestDto flightDto) {
-                // 1. DTO Null kontrolü
                 if (flightDto == null) {
                         throw new IllegalArgumentException("Flight request data cannot be null!");
                 }
 
-                // 2. Aircraft ID Null kontrolü
                 if (flightDto.aircraftId() == null) {
                         throw new IllegalArgumentException("Aircraft ID cannot be null!");
                 }
@@ -87,7 +85,6 @@ public class FlightsServiceImpl implements IFlightsService {
                                 .orElseThrow(() -> new AircraftNotFoundException(
                                                 "Aircraft not found with id: " + flightDto.aircraftId()));
 
-                // Null-safe güncellemeler
                 existingFlight.setFlightCode(flightDto.flightCode());
                 existingFlight.setDepartureAirport(flightDto.departureAirport());
                 existingFlight.setArrivalAirport(flightDto.arrivalAirport());
