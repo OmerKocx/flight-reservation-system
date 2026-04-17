@@ -36,7 +36,6 @@ public class FlightsServiceImpl implements IFlightsService {
 
         @Override
         public FlightsResponseDto getFlightById(Integer id) {
-                // ID kontrolü
                 if (id == null) {
                         throw new IllegalArgumentException("Flight ID cannot be null!");
                 }
@@ -53,7 +52,6 @@ public class FlightsServiceImpl implements IFlightsService {
                 if (flightDto == null) {
                         throw new IllegalArgumentException("Flight request data cannot be null!");
                 }
-
                 if (flightDto.aircraftId() == null) {
                         throw new IllegalArgumentException("Aircraft ID cannot be null!");
                 }
@@ -63,11 +61,20 @@ public class FlightsServiceImpl implements IFlightsService {
                                                 "Aircraft not found with id: " + flightDto.aircraftId()));
 
                 Flights flight = flightsMapper.mapToFlights(flightDto);
+                if (flight == null) {
+                        throw new IllegalStateException("Mapping failed: Flight object is null!");
+                }
+
+                Integer capacity = aircraft.getCapacity();
+                if (capacity == null) {
+                        throw new IllegalStateException("Aircraft capacity is not defined in database!");
+                }
 
                 flight.setAircraft(aircraft);
-                flight.setCapacity(aircraft.getCapacity());
+                flight.setCapacity(capacity);
 
-                return flightsMapper.mapToFlightsResponseDto(flightsRepository.save(flight));
+                Flights savedFlight = flightsRepository.save(flight);
+                return flightsMapper.mapToFlightsResponseDto(savedFlight);
         }
 
         @Transactional
