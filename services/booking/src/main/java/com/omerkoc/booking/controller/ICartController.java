@@ -1,8 +1,11 @@
 package com.omerkoc.booking.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.omerkoc.booking.dto.BookingResponseDto;
 import com.omerkoc.booking.dto.CartRequestDto;
 import com.omerkoc.booking.dto.CartResponseDto;
 
@@ -21,11 +24,17 @@ public interface ICartController {
     @GetMapping("/{userId}")
     ResponseEntity<CartResponseDto> getCart(@PathVariable String userId);
 
+    // URL: DELETE /api/v1/cart/{userId}/flight/{flightId}
+    @DeleteMapping("/{userId}/flight/{flightId}")
+    ResponseEntity<CartResponseDto> removeFromCart(
+            @PathVariable String userId,
+            @PathVariable Integer flightId);
+
     // URL: DELETE /api/v1/cart/{userId}
     @DeleteMapping("/{userId}")
     ResponseEntity<Void> clearCart(@PathVariable String userId);
 
     // URL: POST /api/v1/cart/{userId}/checkout
     @PostMapping("/{userId}/checkout")
-    ResponseEntity<Object> checkout(@PathVariable String userId);
+    ResponseEntity<List<BookingResponseDto>> checkout(@PathVariable String userId);
 }

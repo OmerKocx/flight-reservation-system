@@ -1,5 +1,7 @@
 package com.omerkoc.booking.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.RedisTemplate;
@@ -11,9 +13,10 @@ import com.omerkoc.booking.dto.BookingRequestDto;
 import com.omerkoc.booking.dto.BookingResponseDto;
 import com.omerkoc.booking.dto.CartRequestDto;
 import com.omerkoc.booking.dto.CartResponseDto;
-import com.omerkoc.booking.exception.CustomerNotFoundException; // Kendi exception paketine göre kontrol et
+import com.omerkoc.booking.exception.CustomerNotFoundException;
 import com.omerkoc.booking.mapper.CartMapper;
 import com.omerkoc.booking.model.Cart;
+import com.omerkoc.booking.model.CartItem;
 import com.omerkoc.booking.service.IBookingService;
 import com.omerkoc.booking.service.ICartService;
 
@@ -54,12 +57,20 @@ public class CartServiceImpl implements ICartService {
             throw new RuntimeException("Flight not found with ID: " + request.flightId());
         }
 
-        // STEP 1: Map to Redis Model
-        Cart cart = cartMapper.toCart(userId, request);
+        // STEP 1: Get existing cart or create new one
+        Cart cart = (Cart) redisTemplate.opsForValue().get(CART_PREFIX + userId);
+        if (cart == null) {
+            cart = cartMapper.createNewCart(userId);
+        }
 
-        // STEP 2: Persist in Redis
+        // STEP 2: Add item to cart
+        CartItem newItem = cartMapper.toCartItem(request);
+        cart.getItems().add(newItem);
+
+        // STEP 3: Persist in Redis (reset TTL on each add)
         redisTemplate.opsForValue().set(CART_PREFIX + userId, cart, CART_TTL, TimeUnit.MINUTES);
-        log.info("Success: Flight added to Redis cart for user {}", userId);
+        log.info("Success: Flight {} added to cart for user {}. Total items: {}", 
+                request.flightId(), userId, cart.getItemCount());
 
         return cartMapper.toResponse(cart);
     }
@@ -79,37 +90,73 @@ public class CartServiceImpl implements ICartService {
     }
 
     @Override
+    public CartResponseDto removeFromCart(String userId, Integer flightId) {
+        log.info("Removing flight {} from cart for user {}", flightId, userId);
+
+        Cart cart = (Cart) redisTemplate.opsForValue().get(CART_PREFIX + userId);
+
+        if (cart == null) {
+            log.warn("Cart for user {} has expired or does not exist", userId);
+            return null;
+        }
+
+        boolean removed = cart.getItems().removeIf(item -> item.getFlightId().equals(flightId));
+
+        if (!removed) {
+            log.warn("Flight {} was not found in cart for user {}", flightId, userId);
+        }
+
+        if (cart.getItems().isEmpty()) {
+            clearCart(userId);
+            log.info("Cart is now empty for user {}, removing from Redis", userId);
+            return null;
+        }
+
+        // Update Redis with remaining items
+        redisTemplate.opsForValue().set(CART_PREFIX + userId, cart, CART_TTL, TimeUnit.MINUTES);
+        log.info("Flight {} removed from cart for user {}. Remaining items: {}", 
+                flightId, userId, cart.getItemCount());
+
+        return cartMapper.toResponse(cart);
+    }
+
+    @Override
     public void clearCart(String userId) {
         log.info("Clearing Redis cart for user: {}", userId);
         redisTemplate.delete(CART_PREFIX + userId);
     }
 
     @Override
-    public BookingResponseDto checkout(String userId) {
+    public List<BookingResponseDto> checkout(String userId) {
         log.info("Initiating checkout for user: {}", userId);
 
         // STEP 1: Check Redis Session
         Cart cart = (Cart) redisTemplate.opsForValue().get(CART_PREFIX + userId);
 
-        if (cart == null) {
-            log.error("Checkout failed: Cart session expired for user {}", userId);
-            throw new RuntimeException("Cart session expired! Please select your flight again.");
+        if (cart == null || cart.getItems().isEmpty()) {
+            log.error("Checkout failed: Cart session expired or empty for user {}", userId);
+            throw new RuntimeException("Cart session expired or empty! Please select your flights again.");
         }
 
-        // STEP 2: Prepare Booking Request
-        BookingRequestDto bookingRequest = new BookingRequestDto(
-                cart.getUserId(),
-                cart.getFlightId());
+        // STEP 2: Create bookings for each item in the cart
+        List<BookingResponseDto> bookingResponses = new ArrayList<>();
 
-        // STEP 3: Create Permanent Booking in DB
-        BookingResponseDto response = bookingService.createBooking(bookingRequest);
+        for (CartItem item : cart.getItems()) {
+            BookingRequestDto bookingRequest = new BookingRequestDto(
+                    cart.getUserId(),
+                    item.getFlightId());
 
-        // STEP 4: Purge Cart on Success
-        if (response != null) {
-            clearCart(userId);
-            log.info("Checkout completed successfully for user: {}", userId);
+            BookingResponseDto response = bookingService.createBooking(bookingRequest);
+            bookingResponses.add(response);
+            log.info("Booking created for flight {} with PNR: {}", 
+                    item.getFlightId(), response.bookingCode());
         }
 
-        return response;
+        // STEP 3: Purge Cart on Success
+        clearCart(userId);
+        log.info("Checkout completed successfully for user: {}. {} bookings created.", 
+                userId, bookingResponses.size());
+
+        return bookingResponses;
     }
 }

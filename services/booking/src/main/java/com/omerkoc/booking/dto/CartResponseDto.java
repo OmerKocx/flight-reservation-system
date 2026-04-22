@@ -2,6 +2,7 @@ package com.omerkoc.booking.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.Builder;
 
@@ -9,8 +10,15 @@ import lombok.Builder;
 public record CartResponseDto(
         String message,
         String userId,
-        Integer flightId,
-        String seatNumber,
-        BigDecimal price,
+        List<CartItemDto> items,
+        int itemCount,
+        BigDecimal totalPrice,
         LocalDateTime expiresAt) {
+
+    @Builder
+    public record CartItemDto(
+            Integer flightId,
+            String seatNumber,
+            BigDecimal price) {
+    }
 }

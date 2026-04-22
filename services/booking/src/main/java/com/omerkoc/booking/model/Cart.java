@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -17,12 +19,23 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @Builder
 public class Cart implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
     private String userId;
-    private Integer flightId;
-    private String seatNumber;
-    private BigDecimal price;
+
+    @Builder.Default
+    private List<CartItem> items = new ArrayList<>();
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime expiresAt;
+
+    public BigDecimal getTotalPrice() {
+        return items.stream()
+                .map(CartItem::getPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public int getItemCount() {
+        return items.size();
+    }
 }

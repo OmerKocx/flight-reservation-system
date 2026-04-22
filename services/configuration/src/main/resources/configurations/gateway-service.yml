@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: api-gateway
+    name: gateway-service
   cloud:
     gateway:
       discovery:
@@ -14,19 +14,13 @@ spring:
           uri: lb://customer-service
           predicates:
             - Path=/api/v1/customers/**
-          filters:
-            - StripPrefix=2
 
         - id: flights-service
           uri: lb://flights-service
           predicates:
             - Path=/api/v1/flights/**
-          filters:
-            - StripPrefix=2
 
         - id: booking-service
           uri: lb://booking-service
           predicates:
             - Path=/api/v1/bookings/**
-          filters:
-            - StripPrefix=2

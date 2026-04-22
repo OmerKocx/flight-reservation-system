@@ -1,7 +1,8 @@
 package com.omerkoc.booking.controller.impl;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
-// Bütün mappingler buradan gelir
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.omerkoc.booking.controller.ICartController;
+import com.omerkoc.booking.dto.BookingResponseDto;
 import com.omerkoc.booking.dto.CartRequestDto;
 import com.omerkoc.booking.dto.CartResponseDto;
 import com.omerkoc.booking.service.ICartService;
@@ -39,6 +41,18 @@ public class CartControllerImpl implements ICartController {
         return ResponseEntity.ok(cartService.getCart(userId));
     }
 
+    @DeleteMapping("/{userId}/flight/{flightId}")
+    @Override
+    public ResponseEntity<CartResponseDto> removeFromCart(
+            @PathVariable String userId,
+            @PathVariable Integer flightId) {
+        CartResponseDto response = cartService.removeFromCart(userId, flightId);
+        if (response == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(response);
+    }
+
     @DeleteMapping("/{userId}")
     @Override
     public ResponseEntity<Void> clearCart(@PathVariable String userId) {
@@ -47,7 +61,8 @@ public class CartControllerImpl implements ICartController {
     }
 
     @PostMapping("/{userId}/checkout")
-    public ResponseEntity<Object> checkout(@PathVariable String userId) {
+    @Override
+    public ResponseEntity<List<BookingResponseDto>> checkout(@PathVariable String userId) {
         return ResponseEntity.ok(cartService.checkout(userId));
     }
 }
