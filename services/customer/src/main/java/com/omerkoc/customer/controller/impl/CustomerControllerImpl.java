@@ -22,7 +22,7 @@ import com.omerkoc.customer.service.ICustomerService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/customers")
+@RequestMapping("/api/v1/customers")
 @RequiredArgsConstructor
 public class CustomerControllerImpl implements ICustomerController {
 
@@ -30,7 +30,8 @@ public class CustomerControllerImpl implements ICustomerController {
 
     @Override
     @PostMapping
-    public ResponseEntity<CustomerResponseDto> createCustomer(@Valid @RequestBody CustomerRequestDto customerRequestDto) {
+    public ResponseEntity<CustomerResponseDto> createCustomer(
+            @Valid @RequestBody CustomerRequestDto customerRequestDto) {
         return ResponseEntity.ok(customerService.createCustomer(customerRequestDto));
     }
 

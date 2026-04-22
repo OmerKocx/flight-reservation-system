@@ -36,5 +36,5 @@ spring:
 
 application:
   config:
-    customer-url: http://localhost:8222/api/v1/customers
-    flights-url: http://localhost:8222/api/v1/flights
+    customer-url: http://localhost:8222/**
+    flights-url: http://localhost:8222/**

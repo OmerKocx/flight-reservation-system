@@ -32,14 +32,12 @@ public class BookingServiceImpl implements IBookingService {
     private final FlightClient flightClient;
 
     @Override
-    @jakarta.transaction.Transactional // BURAYI EKLE: Hata olursa her şeyi geri alır (Rollback)
+    @jakarta.transaction.Transactional
     public BookingResponseDto createBooking(BookingRequestDto request) {
         log.info("Creating booking for customer {} on flight {}", request.customerId(), request.flightId());
 
-        // 1. Dış Servis Kontrolleri (Read-only kısımlar)
         checkCustomerAndFlight(request);
 
-        // 2. Önce Bileti Hazırla ve Kaydet
         Booking booking = bookingMapper.toBooking(request);
         booking.setBookingCode(UUID.randomUUID().toString().substring(0, 8).toUpperCase());
         booking.setStatus(BookingStatus.BOOKED);
