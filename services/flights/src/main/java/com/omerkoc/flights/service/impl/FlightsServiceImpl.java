@@ -144,7 +144,6 @@ public class FlightsServiceImpl implements IFlightsService {
                                 .orElseThrow(() -> new FlightsNotFoundException(
                                                 "Flight not found with id: " + flightId));
 
-                // Capacity null kontrolü (Veritabanında kaza olmasın)
                 Integer currentCapacity = existingFlight.getCapacity();
                 if (currentCapacity == null || currentCapacity <= 0) {
                         throw new IllegalStateException("Uçak doldu veya kapasite bilgisi geçersiz!");

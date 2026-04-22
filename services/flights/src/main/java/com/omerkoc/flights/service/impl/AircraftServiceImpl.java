@@ -41,21 +41,18 @@ public class AircraftServiceImpl implements IAircraftService {
 
     @Override
     public AircraftResponseDto createAircraft(AircraftRequestDto aircraftRequestDto) {
-        // 1. Parametre null mı? Giremezsin!
+
         if (aircraftRequestDto == null) {
             throw new IllegalArgumentException("Aircraft request data cannot be null!");
         }
 
-        // 2. DTO'yu Entity'ye çevir ve kontrol et
         Aircraft aircraft = aircraftMapper.mapToAircraft(aircraftRequestDto);
         if (aircraft == null) {
             throw new IllegalStateException("Mapping failed: Aircraft object is null!");
         }
 
-        // 3. Veritabanına kaydet
         Aircraft savedAircraft = aircraftRepository.save(aircraft);
 
-        // 4. Kaydedilen nesneyi Response DTO'ya çevirip dön
         return aircraftMapper.mapToAircraftResponseDto(savedAircraft);
     }
 

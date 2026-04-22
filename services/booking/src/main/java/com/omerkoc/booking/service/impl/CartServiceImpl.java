@@ -41,7 +41,6 @@ public class CartServiceImpl implements ICartService {
     public CartResponseDto addToCart(String userId, CartRequestDto request) {
         log.info("Process started: Adding flight {} to cart for user {}", request.flightId(), userId);
 
-        // STEP 0: USER VALIDATION
         try {
             customerClient.getCustomerById(userId);
         } catch (Exception e) {
@@ -49,7 +48,6 @@ public class CartServiceImpl implements ICartService {
             throw new CustomerNotFoundException("User not found with ID: " + userId);
         }
 
-        // STEP 0.1: FLIGHT VALIDATION
         try {
             flightClient.getFlightById(request.flightId());
         } catch (Exception e) {
@@ -57,19 +55,16 @@ public class CartServiceImpl implements ICartService {
             throw new RuntimeException("Flight not found with ID: " + request.flightId());
         }
 
-        // STEP 1: Get existing cart or create new one
         Cart cart = (Cart) redisTemplate.opsForValue().get(CART_PREFIX + userId);
         if (cart == null) {
             cart = cartMapper.createNewCart(userId);
         }
 
-        // STEP 2: Add item to cart
         CartItem newItem = cartMapper.toCartItem(request);
         cart.getItems().add(newItem);
 
-        // STEP 3: Persist in Redis (reset TTL on each add)
         redisTemplate.opsForValue().set(CART_PREFIX + userId, cart, CART_TTL, TimeUnit.MINUTES);
-        log.info("Success: Flight {} added to cart for user {}. Total items: {}", 
+        log.info("Success: Flight {} added to cart for user {}. Total items: {}",
                 request.flightId(), userId, cart.getItemCount());
 
         return cartMapper.toResponse(cart);
@@ -112,9 +107,8 @@ public class CartServiceImpl implements ICartService {
             return null;
         }
 
-        // Update Redis with remaining items
         redisTemplate.opsForValue().set(CART_PREFIX + userId, cart, CART_TTL, TimeUnit.MINUTES);
-        log.info("Flight {} removed from cart for user {}. Remaining items: {}", 
+        log.info("Flight {} removed from cart for user {}. Remaining items: {}",
                 flightId, userId, cart.getItemCount());
 
         return cartMapper.toResponse(cart);
@@ -130,7 +124,6 @@ public class CartServiceImpl implements ICartService {
     public List<BookingResponseDto> checkout(String userId) {
         log.info("Initiating checkout for user: {}", userId);
 
-        // STEP 1: Check Redis Session
         Cart cart = (Cart) redisTemplate.opsForValue().get(CART_PREFIX + userId);
 
         if (cart == null || cart.getItems().isEmpty()) {
@@ -138,7 +131,6 @@ public class CartServiceImpl implements ICartService {
             throw new RuntimeException("Cart session expired or empty! Please select your flights again.");
         }
 
-        // STEP 2: Create bookings for each item in the cart
         List<BookingResponseDto> bookingResponses = new ArrayList<>();
 
         for (CartItem item : cart.getItems()) {
@@ -148,13 +140,12 @@ public class CartServiceImpl implements ICartService {
 
             BookingResponseDto response = bookingService.createBooking(bookingRequest);
             bookingResponses.add(response);
-            log.info("Booking created for flight {} with PNR: {}", 
+            log.info("Booking created for flight {} with PNR: {}",
                     item.getFlightId(), response.bookingCode());
         }
 
-        // STEP 3: Purge Cart on Success
         clearCart(userId);
-        log.info("Checkout completed successfully for user: {}. {} bookings created.", 
+        log.info("Checkout completed successfully for user: {}. {} bookings created.",
                 userId, bookingResponses.size());
 
         return bookingResponses;

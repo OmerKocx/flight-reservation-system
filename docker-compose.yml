@@ -69,7 +69,6 @@ services:
     networks:
       - flight-reservation
 
-  # REDIS BURADA OLMALI (services başlığının altında)
   redis:
     container_name: Ms_redis
     image: redis:alpine
