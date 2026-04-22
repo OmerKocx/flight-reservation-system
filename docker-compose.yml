@@ -1,5 +1,4 @@
 services:
-  # Docker Compose ile ayağa kalkacak servisler:
 
   postgresql:
     container_name: Ms_pg_sql
@@ -67,6 +66,24 @@ services:
     image: openzipkin/zipkin
     ports:
       - "9411:9411"
+    networks:
+      - flight-reservation
+
+  # REDIS BURADA OLMALI (services başlığının altında)
+  redis:
+    container_name: Ms_redis
+    image: redis:alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - flight-reservation
+
+  redis-insight:
+    container_name: Ms_redis_insight
+    image: redis/redisinsight:latest
+    ports:
+      - "5540:5540"
     networks:
       - flight-reservation
 
