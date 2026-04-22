@@ -10,9 +10,9 @@ import com.omerkoc.booking.dto.FlightResponse;
 @FeignClient(name = "flights-service", url = "${application.config.flights-url}")
 public interface FlightClient {
 
-    @GetMapping("/api/v1/flights/{id}")
+    @GetMapping("/{id}")
     FlightResponse getFlightById(@PathVariable("id") Integer id);
 
-    @PostMapping("/api/v1/flights/set-capacity/{flightId}")
+    @PostMapping("/set-capacity/{flightId}")
     void decreaseCapacity(@PathVariable("flightId") Integer flightId);
 }
