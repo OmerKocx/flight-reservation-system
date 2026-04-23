@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import com.omerkoc.booking.exception.BookingNotFoundException;
+import com.omerkoc.booking.exception.CartExpiredException;
 import com.omerkoc.booking.exception.CustomerNotFoundException;
 import com.omerkoc.booking.exception.FlightNotFoundException;
 
@@ -57,6 +58,19 @@ public class GlobalExceptionHandler {
                 .traceId(request.getSessionId())
                 .build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+    @ExceptionHandler(CartExpiredException.class)
+    public ResponseEntity<ErrorResponse> handleCartExpiredException(CartExpiredException ex, WebRequest request) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .message(ex.getMessage())
+                .errorCode("CART_EXPIRED")
+                .path(request.getDescription(false))
+                .status(HttpStatus.GONE.value())
+                .timestamp(System.currentTimeMillis())
+                .traceId(request.getSessionId())
+                .build();
+        return ResponseEntity.status(HttpStatus.GONE).body(errorResponse);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

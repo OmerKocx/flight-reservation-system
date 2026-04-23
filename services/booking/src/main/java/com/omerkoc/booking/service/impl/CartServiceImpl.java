@@ -13,7 +13,9 @@ import com.omerkoc.booking.dto.BookingRequestDto;
 import com.omerkoc.booking.dto.BookingResponseDto;
 import com.omerkoc.booking.dto.CartRequestDto;
 import com.omerkoc.booking.dto.CartResponseDto;
+import com.omerkoc.booking.exception.CartExpiredException;
 import com.omerkoc.booking.exception.CustomerNotFoundException;
+import com.omerkoc.booking.exception.FlightNotFoundException;
 import com.omerkoc.booking.mapper.CartMapper;
 import com.omerkoc.booking.model.Cart;
 import com.omerkoc.booking.model.CartItem;
@@ -52,7 +54,7 @@ public class CartServiceImpl implements ICartService {
             flightClient.getFlightById(request.flightId());
         } catch (Exception e) {
             log.error("Validation failed: Flight with ID {} not found in flights-service", request.flightId());
-            throw new RuntimeException("Flight not found with ID: " + request.flightId());
+            throw new FlightNotFoundException("Flight not found with ID: " + request.flightId());
         }
 
         Cart cart = (Cart) redisTemplate.opsForValue().get(CART_PREFIX + userId);
@@ -128,7 +130,7 @@ public class CartServiceImpl implements ICartService {
 
         if (cart == null || cart.getItems().isEmpty()) {
             log.error("Checkout failed: Cart session expired or empty for user {}", userId);
-            throw new RuntimeException("Cart session expired or empty! Please select your flights again.");
+            throw new CartExpiredException("Cart session expired or empty! Please select your flights again.");
         }
 
         List<BookingResponseDto> bookingResponses = new ArrayList<>();
