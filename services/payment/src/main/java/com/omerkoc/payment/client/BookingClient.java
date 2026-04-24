@@ -1,4 +1,4 @@
-package main.java.com.omerkoc.payment.client;
+package com.omerkoc.payment.client;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.service.annotation.HttpExchange;

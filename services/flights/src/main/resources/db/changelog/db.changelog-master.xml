@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+    <changeSet id="1" author="omerkoc">
+        <createTable tableName="flights">
+            <column name="id" type="INTEGER">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="flight_number" type="VARCHAR(255)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="origin" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="destination" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="departure_time" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="arrival_time" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="DECIMAL(19,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="capacity" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

@@ -30,5 +30,5 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://keycloak:8080/realms/flight-reservation
-          jwk-set-uri: http://keycloak:8080/realms/flight-reservation/protocol/openid-connect/certs
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://keycloak:8080/realms/flight-reservation}
+          jwk-set-uri: ${KEYCLOAK_JWKS_URI:http://keycloak:8080/realms/flight-reservation/protocol/openid-connect/certs}

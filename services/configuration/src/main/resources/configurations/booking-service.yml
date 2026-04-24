@@ -7,9 +7,9 @@ spring:
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://postgres-db:5432/booking
-    username: postgres
-    password: admin
+    url: ${DB_URL:jdbc:postgresql://postgres-db:5432/booking}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:admin}
 
   jpa:
     hibernate:
@@ -17,25 +17,17 @@ spring:
     database: POSTGRESQL
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
-  flyway:
-    baseline-on-migrate: true
-    enabled: true
-    baseline-description: "init"
-    baseline-version: 0
-    user: ${spring.datasource.username}
-    password: ${spring.datasource.password}
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    enabled: ${LIQUIBASE_ENABLED:true}
 
   data:
     redis:
-      host: redis-db
-      port: 6379
+      host: ${REDIS_HOST:redis-db}
+      port: ${REDIS_PORT:6379}
       timeout: 60000
-
-  jackson:
-    serialization:
-      fail-on-empty-beans: false
 
 application:
   config:
-    customer-url: http://customer-service:8090/api/v1/customers
-    flights-url: http://flights-service:8070/api/v1/flights
+    customer-url: ${CUSTOMER_SERVICE_URL:http://customer-service:8090/api/v1/customers}
+    flights-url: ${FLIGHT_SERVICE_URL:http://flights-service:8070/api/v1/flights}
