@@ -1,6 +1,8 @@
 package com.omerkoc.booking.model;
 
 public enum BookingStatus {
-    BOOKED,
+    PENDING,
+    APPROVED,
+    REJECTED,
     CANCELLED
 }

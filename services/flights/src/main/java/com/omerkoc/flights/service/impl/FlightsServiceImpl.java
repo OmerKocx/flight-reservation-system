@@ -140,16 +140,10 @@ public class FlightsServiceImpl implements IFlightsService {
                         throw new IllegalArgumentException("Flight ID cannot be null!");
                 }
 
-                Flights existingFlight = flightsRepository.findById(flightId)
-                                .orElseThrow(() -> new FlightsNotFoundException(
-                                                "Flight not found with id: " + flightId));
-
-                Integer currentCapacity = existingFlight.getCapacity();
-                if (currentCapacity == null || currentCapacity <= 0) {
-                        throw new IllegalStateException("Uçak doldu veya kapasite bilgisi geçersiz!");
+                int updatedRows = flightsRepository.decreaseCapacitySafely(flightId);
+                if (updatedRows == 0) {
+                        throw new IllegalStateException("Flight is full or capacity information is invalid!");
                 }
-
-                existingFlight.setCapacity(currentCapacity - 1);
-                return flightsMapper.mapToFlightsResponseDto(flightsRepository.save(existingFlight));
+                return flightsMapper.mapToFlightsResponseDto(flightsRepository.findById(flightId).get());
         }
 }

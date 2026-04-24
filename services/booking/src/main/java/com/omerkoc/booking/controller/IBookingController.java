@@ -17,4 +17,8 @@ public interface IBookingController {
     ResponseEntity<BookingResponseDto> updateBooking(Integer id, BookingRequestDto request);
 
     ResponseEntity<Void> deleteBooking(Integer id);
+
+    ResponseEntity<Void> approveBooking(Integer id);
+
+    ResponseEntity<Void> rejectBooking(Integer id);
 }

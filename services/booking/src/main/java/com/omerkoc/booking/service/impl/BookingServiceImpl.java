@@ -40,7 +40,7 @@ public class BookingServiceImpl implements IBookingService {
 
         Booking booking = bookingMapper.toBooking(request);
         booking.setBookingCode(UUID.randomUUID().toString().substring(0, 8).toUpperCase());
-        booking.setStatus(BookingStatus.BOOKED);
+        booking.setStatus(BookingStatus.PENDING);
         booking.setBookingDate(LocalDateTime.now());
 
         Booking savedBooking = bookingRepository.save(booking);
@@ -99,4 +99,23 @@ public class BookingServiceImpl implements IBookingService {
         throw new UnsupportedOperationException("Unimplemented method 'updateBooking'");
     }
 
+    @Override
+    @jakarta.transaction.Transactional
+    public void approveBooking(Integer id) {
+        log.info("Approving booking: {}", id);
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new BookingNotFoundException("Booking not found with id: " + id));
+        booking.setStatus(BookingStatus.APPROVED);
+        bookingRepository.save(booking);
+    }
+
+    @Override
+    @jakarta.transaction.Transactional
+    public void rejectBooking(Integer id) {
+        log.info("Rejecting booking: {}", id);
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new BookingNotFoundException("Booking not found with id: " + id));
+        booking.setStatus(BookingStatus.REJECTED);
+        bookingRepository.save(booking);
+    }
 }

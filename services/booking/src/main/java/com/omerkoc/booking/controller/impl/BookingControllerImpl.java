@@ -59,4 +59,18 @@ public class BookingControllerImpl implements IBookingController {
         bookingService.deleteBooking(id);
         return ResponseEntity.noContent().build();
     }
+
+    @Override
+    @PutMapping("/{id}/approve")
+    public ResponseEntity<Void> approveBooking(@PathVariable Integer id) {
+        bookingService.approveBooking(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    @PutMapping("/{id}/reject")
+    public ResponseEntity<Void> rejectBooking(@PathVariable Integer id) {
+        bookingService.rejectBooking(id);
+        return ResponseEntity.ok().build();
+    }
 }

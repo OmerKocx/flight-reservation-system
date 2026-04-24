@@ -15,4 +15,8 @@ public interface IBookingService {
     BookingResponseDto updateBooking(Integer id, BookingRequestDto request);
 
     void deleteBooking(Integer id);
+
+    void approveBooking(Integer id);
+
+    void rejectBooking(Integer id);
 }

@@ -22,6 +22,7 @@ import com.omerkoc.booking.model.CartItem;
 import com.omerkoc.booking.service.IBookingService;
 import com.omerkoc.booking.service.ICartService;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -123,6 +124,7 @@ public class CartServiceImpl implements ICartService {
     }
 
     @Override
+    @Transactional
     public List<BookingResponseDto> checkout(String userId) {
         log.info("Initiating checkout for user: {}", userId);
 
