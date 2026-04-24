@@ -7,7 +7,7 @@ spring:
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5444/booking
+    url: jdbc:postgresql://postgres-db:5432/booking
     username: postgres
     password: admin
 
@@ -24,9 +24,10 @@ spring:
     baseline-version: 0
     user: ${spring.datasource.username}
     password: ${spring.datasource.password}
+
   data:
     redis:
-      host: localhost
+      host: redis-db
       port: 6379
       timeout: 60000
 
@@ -36,5 +37,5 @@ spring:
 
 application:
   config:
-    customer-url: http://localhost:8090/api/v1/customers
-    flights-url: http://localhost:8070/api/v1/flights
+    customer-url: http://customer-service:8090/api/v1/customers
+    flights-url: http://flights-service:8070/api/v1/flights

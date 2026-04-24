@@ -2,9 +2,12 @@ server:
   port: 8040
 
 spring:
+  application:
+    name: payment-service
+
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5444/payments
+    url: jdbc:postgresql://postgres-db:5432/payments
     username: postgres
     password: admin
 
@@ -24,4 +27,4 @@ spring:
 
 application:
   config:
-    booking-url: http://localhost:8060
+    booking-url: http://booking-service:8060

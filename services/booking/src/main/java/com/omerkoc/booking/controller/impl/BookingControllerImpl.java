@@ -61,9 +61,9 @@ public class BookingControllerImpl implements IBookingController {
     }
 
     @Override
-    @PutMapping("/{id}/approve")
-    public ResponseEntity<Void> approveBooking(@PathVariable Integer id) {
-        bookingService.approveBooking(id);
+    @PutMapping("/{id}/confirm")
+    public ResponseEntity<Void> confirmBooking(@PathVariable Integer id) {
+        bookingService.confirmBooking(id);
         return ResponseEntity.ok().build();
     }
 

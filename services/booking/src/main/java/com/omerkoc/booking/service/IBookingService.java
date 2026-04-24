@@ -16,7 +16,7 @@ public interface IBookingService {
 
     void deleteBooking(Integer id);
 
-    void approveBooking(Integer id);
+    void confirmBooking(Integer id);
 
     void rejectBooking(Integer id);
 }

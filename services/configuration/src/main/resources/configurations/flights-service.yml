@@ -7,7 +7,7 @@ spring:
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5444/flights
+    url: jdbc:postgresql://postgres-db:5432/flights
     username: postgres
     password: admin
 
@@ -24,3 +24,7 @@ spring:
     baseline-version: 0
     user: ${spring.datasource.username}
     password: ${spring.datasource.password}
+
+  jackson:
+    serialization:
+      fail-on-empty-beans: false

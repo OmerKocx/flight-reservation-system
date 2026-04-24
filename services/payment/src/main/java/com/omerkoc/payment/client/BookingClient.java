@@ -7,8 +7,8 @@ import org.springframework.web.service.annotation.PutExchange;
 @HttpExchange("/api/v1/bookings")
 public interface BookingClient {
 
-    @PutExchange("/{id}/approve")
-    void approveBooking(@PathVariable("id") Integer id);
+    @PutExchange("/{id}/confirm")
+    void confirmBooking(@PathVariable("id") Integer id);
 
     @PutExchange("/{id}/reject")
     void rejectBooking(@PathVariable("id") Integer id);

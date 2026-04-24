@@ -46,14 +46,12 @@ public class BookingServiceImpl implements IBookingService {
         Booking savedBooking = bookingRepository.save(booking);
 
         try {
-            log.info("Decreasing capacity for flight: {}", request.flightId());
             flightClient.decreaseCapacity(request.flightId());
         } catch (Exception e) {
-            log.error("Kapasite düşürülemedi, işlem geri alınıyor: {}", e.getMessage());
+            log.error("Kapasite düşürülemedi: {}", e.getMessage());
             throw new RuntimeException("Flight capacity could not be updated. Booking cancelled!");
         }
 
-        log.info("Booking created successfully with PNR: {}", savedBooking.getBookingCode());
         return bookingMapper.toResponse(savedBooking);
     }
 
@@ -101,11 +99,11 @@ public class BookingServiceImpl implements IBookingService {
 
     @Override
     @jakarta.transaction.Transactional
-    public void approveBooking(Integer id) {
-        log.info("Approving booking: {}", id);
+    public void confirmBooking(Integer id) {
+        log.info("Confirming booking: {}", id);
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new BookingNotFoundException("Booking not found with id: " + id));
-        booking.setStatus(BookingStatus.APPROVED);
+        booking.setStatus(BookingStatus.CONFIRMED);
         bookingRepository.save(booking);
     }
 
