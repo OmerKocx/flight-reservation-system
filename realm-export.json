@@ -1,0 +1,52 @@
+{
+  "id": "flight-reservation",
+  "realm": "flight-reservation",
+  "enabled": true,
+  "roles": {
+    "realm": [
+      {
+        "name": "USER",
+        "description": "Standard User Role"
+      },
+      {
+        "name": "ADMIN",
+        "description": "Administrator Role"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "flight-reservation-client",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "directAccessGrantsEnabled": true,
+      "webOrigins": [
+        "*"
+      ],
+      "redirectUris": [
+        "*"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "omer",
+      "enabled": true,
+      "email": "omer@test.com",
+      "firstName": "Omer",
+      "lastName": "Koc",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "USER",
+        "ADMIN"
+      ]
+    }
+  ]
+}

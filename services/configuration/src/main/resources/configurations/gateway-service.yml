@@ -26,3 +26,9 @@ spring:
           uri: lb://payment-service
           predicates:
             - Path=/api/v1/payments/**
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8080/realms/flight-reservation
+          jwk-set-uri: http://keycloak:8080/realms/flight-reservation/protocol/openid-connect/certs
