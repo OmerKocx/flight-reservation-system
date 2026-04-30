@@ -1,5 +1,0 @@
-CREATE DATABASE booking;
-CREATE DATABASE flights;
-CREATE DATABASE customer;
-CREATE DATABASE payments;
-CREATE DATABASE keycloak;
